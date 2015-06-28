@@ -38,7 +38,7 @@ public class App {
             File pdfFile = new File(filepath + "/" + new Date().getTime()
                 + ".pdf");
             // 创建Openoffice连接
-            OpenOfficeConnection con = new SocketOpenOfficeConnection("173.39.194.159",8100);
+            OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
             try {
                 // 连接
                 con.connect();
@@ -67,7 +67,7 @@ public class App {
         File htmlFile = new File(filepath + "/" + new Date().getTime()
             + ".html");
         // 创建Openoffice连接
-        OpenOfficeConnection con = new SocketOpenOfficeConnection("173.39.194.159",8100);
+        OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
         try {
             // 连接
             con.connect();
