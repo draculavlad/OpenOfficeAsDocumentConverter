@@ -22,9 +22,37 @@ public class App {
     public static void main(String... args) {
         String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
-
+        convertPDF(new File(originalDoc),currentPath);
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
+
+    /**
+         * 将word文档转换成pdf文档
+         *
+         * @param docFile  需要转换的word文档
+         * @param filepath 转换之后html的存放路径
+         *
+         */
+        public static void convertPDF(File docFile, String filepath) {
+            // 创建保存html的文件
+            File pdfFile = new File(filepath + "/" + new Date().getTime()
+                + ".pdf");
+            // 创建Openoffice连接
+            OpenOfficeConnection con = new SocketOpenOfficeConnection("173.39.194.159",8100);
+            try {
+                // 连接
+                con.connect();
+            } catch (ConnectException e) {
+                System.out.println("获取OpenOffice连接失败...");
+                e.printStackTrace();
+            }
+            // 创建转换器
+            DocumentConverter converter = new OpenOfficeDocumentConverter(con);
+            // 转换文档问html
+            converter.convert(docFile, pdfFile);
+            // 关闭openoffice连接
+            con.disconnect();
+        }
 
     /**
      * 将word文档转换成html文档
@@ -34,12 +62,12 @@ public class App {
      *
      * @return 转换之后的html文件
      */
-    public static File convert(File docFile, String filepath) {
+    public static File convertHtml(File docFile, String filepath) {
         // 创建保存html的文件
         File htmlFile = new File(filepath + "/" + new Date().getTime()
             + ".html");
         // 创建Openoffice连接
-        OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
+        OpenOfficeConnection con = new SocketOpenOfficeConnection("173.39.194.159",8100);
         try {
             // 连接
             con.connect();
@@ -66,7 +94,7 @@ public class App {
      */
     public static String toHtmlString(File docFile, String filepath) {
         // 转换word文档
-        File htmlFile = convert(docFile, filepath);
+        File htmlFile = convertHtml(docFile, filepath);
         // 获取html文件流
         StringBuffer htmlSb = new StringBuffer();
         try {
