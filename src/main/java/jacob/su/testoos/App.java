@@ -48,7 +48,7 @@ public class App {
     public static void convertODF(File docFile, String filepath) {
         // 创建保存html的文件
         File pdfFile = new File(filepath + "/" + new Date().getTime()
-            + ".pdf");
+            + ".odf");
 
 
         DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
