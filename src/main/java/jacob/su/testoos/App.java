@@ -22,38 +22,14 @@ public class App {
     public static void main(String... args) {
         String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
+        String originalXLS = currentPath + File.separator + "Workbook2.xls";
+        String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
         convertPDF(new File(originalDoc),currentPath);
-        convertODF(new File(originalDoc),currentPath);
+        convertPDF(new File(originalXLS), currentPath);
+        convertPDF(new File(originalXLSX), currentPath);
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
 
-    /**
-             * 将word文档转换成odf文档
-             *
-             * @param docFile  需要转换的word文档
-             * @param filepath 转换之后html的存放路径
-             *
-             */
-            public static void convertODF(File docFile, String filepath) {
-                // 创建保存html的文件
-                File odfFile = new File(filepath + "/" + new Date().getTime()
-                    + ".odf");
-                // 创建Openoffice连接
-                OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
-                try {
-                    // 连接
-                    con.connect();
-                } catch (ConnectException e) {
-                    System.out.println("获取OpenOffice连接失败...");
-                    e.printStackTrace();
-                }
-                // 创建转换器
-                DocumentConverter converter = new OpenOfficeDocumentConverter(con);
-                // 转换文档问html
-                converter.convert(docFile, odfFile);
-                // 关闭openoffice连接
-                con.disconnect();
-            }
 
     /**
          * 将word文档转换成pdf文档
