@@ -14,6 +14,16 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+
+
+  <repositories>
+    <repository>
+      <id>cmk-local-repo</id>
+      <name>jodconverter-repo</name>
+      <url>http://173.39.194.55:8081/nexus/content/repositories/thirdparty/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -22,9 +32,50 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-    	<groupId>com.artofsolving</groupId>
-    	<artifactId>jodconverter-maven-plugin</artifactId>
-    	<version>2.2.1</version>
+      <groupId>com.artofsolving</groupId>
+      <artifactId>jodconverter</artifactId>
+      <version>3.0</version>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.artofsolving</groupId>
+      <artifactId>jodconverter-core</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.json</groupId>
+      <artifactId>json-20090211</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.star</groupId>
+      <artifactId>juh</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.star</groupId>
+      <artifactId>jurt</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.star</groupId>
+      <artifactId>ridl</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.star</groupId>
+      <artifactId>unoil</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-cli</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.4</version>
     </dependency>
     <dependency>
     	<groupId>org.slf4j</groupId>

@@ -6,10 +6,9 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.artofsolving.jodconverter.DocumentConverter;
-import com.artofsolving.jodconverter.openoffice.connection.OpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.connection.SocketOpenOfficeConnection;
-import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConverter;
+import org.artofsolving.jodconverter.OfficeDocumentConverter;
+import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
+import org.artofsolving.jodconverter.office.OfficeManager;
 
 /**
  * <p>TODO</p>
@@ -19,14 +18,19 @@ import com.artofsolving.jodconverter.openoffice.converter.OpenOfficeDocumentConv
  */
 public class App {
 
+
+    static final String OpenOffice_HOME = "/opt/openoffice4";
+
     public static void main(String... args) {
         String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
         String originalDocx = currentPath + File.separator + "TestConvertor.docx";
         String originalXLS = currentPath + File.separator + "Workbook2.xls";
         String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
-        convertPDF(new File(originalDoc),currentPath);
-        convertPDF(new File(originalDocx),currentPath);
+        convertPDF(new File(originalDoc), currentPath);
+        convertPDF(new File(originalDocx), currentPath);
+        convertODF(new File(originalDoc), currentPath);
+        convertODF(new File(originalDocx), currentPath);
         convertPDF(new File(originalXLS), currentPath);
         convertPDF(new File(originalXLSX), currentPath);
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
@@ -34,32 +38,58 @@ public class App {
 
 
     /**
-         * 将word文档转换成pdf文档
-         *
-         * @param docFile  需要转换的word文档
-         * @param filepath 转换之后html的存放路径
-         *
-         */
-        public static void convertPDF(File docFile, String filepath) {
-            // 创建保存html的文件
-            File pdfFile = new File(filepath + "/" + new Date().getTime()
-                + ".pdf");
-            // 创建Openoffice连接
-            OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
-            try {
-                // 连接
-                con.connect();
-            } catch (ConnectException e) {
-                System.out.println("获取OpenOffice连接失败...");
-                e.printStackTrace();
-            }
-            // 创建转换器
-            DocumentConverter converter = new OpenOfficeDocumentConverter(con);
-            // 转换文档问html
-            converter.convert(docFile, pdfFile);
-            // 关闭openoffice连接
-            con.disconnect();
-        }
+     * 将word文档转换成odf文档
+     *
+     * @param docFile  需要转换的word文档
+     * @param filepath 转换之后html的存放路径
+     */
+    public static void convertODF(File docFile, String filepath) {
+        // 创建保存html的文件
+        File pdfFile = new File(filepath + "/" + new Date().getTime()
+            + ".pdf");
+
+
+        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
+        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+        OfficeManager officeManager = configuration.buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+        converter.convert(docFile, pdfFile);
+
+        officeManager.stop();
+
+    }
+
+    /**
+     * 将word文档转换成pdf文档
+     *
+     * @param docFile  需要转换的word文档
+     * @param filepath 转换之后html的存放路径
+     */
+    public static void convertPDF(File docFile, String filepath) {
+        // 创建保存html的文件
+        File pdfFile = new File(filepath + "/" + new Date().getTime()
+            + ".pdf");
+
+
+        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
+        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+        OfficeManager officeManager = configuration.buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+        converter.convert(docFile, pdfFile);
+
+        officeManager.stop();
+
+    }
 
     /**
      * 将word文档转换成html文档
@@ -73,21 +103,18 @@ public class App {
         // 创建保存html的文件
         File htmlFile = new File(filepath + "/" + new Date().getTime()
             + ".html");
-        // 创建Openoffice连接
-        OpenOfficeConnection con = new SocketOpenOfficeConnection(8100);
-        try {
-            // 连接
-            con.connect();
-        } catch (ConnectException e) {
-            System.out.println("获取OpenOffice连接失败...");
-            e.printStackTrace();
-        }
-        // 创建转换器
-        DocumentConverter converter = new OpenOfficeDocumentConverter(con);
-        // 转换文档问html
+        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
+        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+        OfficeManager officeManager = configuration.buildOfficeManager();
+        officeManager.start();
+
+        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
         converter.convert(docFile, htmlFile);
-        // 关闭openoffice连接
-        con.disconnect();
+
+        officeManager.stop();
         return htmlFile;
     }
 
