@@ -32,7 +32,9 @@ public class App {
         convertODF(new File(originalDoc), currentPath);
         convertODF(new File(originalDocx), currentPath);
         convertPDF(new File(originalXLS), currentPath);
+        convertODF(new File(originalXLS), currentPath);
         convertPDF(new File(originalXLSX), currentPath);
+        convertODF(new File(originalXLSX), currentPath);
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
 
