@@ -22,6 +22,7 @@ public class App {
     public static void main(String... args) {
         String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
+        String originalDocx = currentPath + File.separator + "TestConvertor.docx";
         String originalXLS = currentPath + File.separator + "Workbook2.xls";
         String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
         convertPDF(new File(originalDoc),currentPath);
