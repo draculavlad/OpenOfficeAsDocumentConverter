@@ -29,12 +29,8 @@ public class App {
         String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
         convertPDF(new File(originalDoc), currentPath);
         convertPDF(new File(originalDocx), currentPath);
-        convertODF(new File(originalDoc), currentPath);
-        convertODF(new File(originalDocx), currentPath);
         convertPDF(new File(originalXLS), currentPath);
-        convertODF(new File(originalXLS), currentPath);
         convertPDF(new File(originalXLSX), currentPath);
-        convertODF(new File(originalXLSX), currentPath);
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
 
