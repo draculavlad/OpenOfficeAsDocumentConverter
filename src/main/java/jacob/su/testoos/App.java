@@ -24,16 +24,16 @@ public class App {
     static final AtomicLong threadCount = new AtomicLong(0);
     static final DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
     static OfficeManager officeManager;
+    
 
-    static {
+    public static void main(String... args) throws InterruptedException {
+
         configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
         configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
         configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
         configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
         officeManager = configuration.buildOfficeManager();
-    }
 
-    public static void main(String... args) throws InterruptedException {
         final String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
         final String originalDocx = currentPath + File.separator + "TestConvertor.docx";
