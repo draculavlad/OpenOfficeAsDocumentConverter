@@ -22,6 +22,16 @@ public class App {
 
     static final String OpenOffice_HOME = "/opt/openoffice4";
     static final AtomicLong threadCount = new AtomicLong(0);
+    static final DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+    static OfficeManager officeManager;
+
+    static {
+        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
+        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
+        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
+        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
+        officeManager = configuration.buildOfficeManager();
+    }
 
     public static void main(String... args) throws InterruptedException {
         final String currentPath = System.getProperty("user.dir");
@@ -30,17 +40,19 @@ public class App {
         String originalXLS = currentPath + File.separator + "Workbook2.xls";
         final String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
         Long totalStart = System.currentTimeMillis();
-        for (int i=0; i<100; i++) {
 
+        for (int i=0; i<100; i++) {
+            officeManager.start();
             convertPDF(new File(originalDoc), currentPath);
             convertPDF(new File(originalDocx), currentPath);
             convertPDF(new File(originalXLS), currentPath);
             convertPDF(new File(originalXLSX), currentPath);
+            officeManager.stop();
         }
         Long totalEnd = System.currentTimeMillis();
         System.out.println("total time count: "+(totalEnd-totalStart));
         Long threadTotalStart = System.currentTimeMillis();
-
+        officeManager.start();
         for (int i=0; i<100; i++) {
             threadCount.incrementAndGet();
             Thread thread = new Thread(new Runnable() {
@@ -58,9 +70,10 @@ public class App {
         while (threadCount.longValue() > 0) {
             System.out.println("current thread: "+threadCount);
         }
+        officeManager.stop();
         Long threadTotalEnd = System.currentTimeMillis();
         System.out.println("current thread count: "+(threadTotalEnd-threadTotalStart));
-        System.out.println(toHtmlString(new File(originalDoc), currentPath));
+        //System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
 
 
@@ -77,11 +90,6 @@ public class App {
             + ".odf");
 
 
-        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
-        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
-        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
-        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
-        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
         OfficeManager officeManager = configuration.buildOfficeManager();
         officeManager.start();
 
@@ -104,14 +112,6 @@ public class App {
         File pdfFile = new File(filepath + "/" + new Date().getTime()
             + ".pdf");
 
-
-        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
-        configuration.setOfficeHome(new File(OpenOffice_HOME));// 设置OpenOffice.org安装目录
-        configuration.setPortNumbers(8100); // 设置转换端口，默认为8100
-        configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
-        configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
-        OfficeManager officeManager = configuration.buildOfficeManager();
-        officeManager.start();
 
         OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
         converter.convert(docFile, pdfFile);
