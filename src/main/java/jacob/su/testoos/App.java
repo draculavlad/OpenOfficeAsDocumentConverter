@@ -3,6 +3,7 @@ package jacob.su.testoos;
 import java.io.*;
 import java.net.ConnectException;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,17 +21,45 @@ public class App {
 
 
     static final String OpenOffice_HOME = "/opt/openoffice4";
+    static final AtomicLong threadCount = new AtomicLong(0);
 
-    public static void main(String... args) {
-        String currentPath = System.getProperty("user.dir");
+    public static void main(String... args) throws InterruptedException {
+        final String currentPath = System.getProperty("user.dir");
         String originalDoc = currentPath + File.separator + "SwitchAndRouterTheory.doc";
-        String originalDocx = currentPath + File.separator + "TestConvertor.docx";
+        final String originalDocx = currentPath + File.separator + "TestConvertor.docx";
         String originalXLS = currentPath + File.separator + "Workbook2.xls";
-        String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
-        convertPDF(new File(originalDoc), currentPath);
-        convertPDF(new File(originalDocx), currentPath);
-        convertPDF(new File(originalXLS), currentPath);
-        convertPDF(new File(originalXLSX), currentPath);
+        final String originalXLSX = currentPath + File.separator + "Workbook2.xlsx";
+        Long totalStart = System.currentTimeMillis();
+        for (int i=0; i<100; i++) {
+
+            convertPDF(new File(originalDoc), currentPath);
+            convertPDF(new File(originalDocx), currentPath);
+            convertPDF(new File(originalXLS), currentPath);
+            convertPDF(new File(originalXLSX), currentPath);
+        }
+        Long totalEnd = System.currentTimeMillis();
+        System.out.println("total time count: "+(totalEnd-totalStart));
+        Long threadTotalStart = System.currentTimeMillis();
+
+        for (int i=0; i<100; i++) {
+            threadCount.incrementAndGet();
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if ((threadCount.longValue()%2)==0){
+                        convertPDF(new File(originalXLSX), currentPath);
+                    } else {
+                        convertPDF(new File(originalDocx), currentPath);
+                    }
+                    threadCount.decrementAndGet();
+                }
+            });
+        }
+        while (threadCount.longValue() > 0) {
+            System.out.println("current thread: "+threadCount);
+        }
+        Long threadTotalEnd = System.currentTimeMillis();
+        System.out.println("current thread count: "+(threadTotalEnd-threadTotalStart));
         System.out.println(toHtmlString(new File(originalDoc), currentPath));
     }
 
@@ -42,6 +71,7 @@ public class App {
      * @param filepath 转换之后html的存放路径
      */
     public static void convertODF(File docFile, String filepath) {
+
         // 创建保存html的文件
         File pdfFile = new File(filepath + "/" + new Date().getTime()
             + ".odf");
@@ -69,6 +99,7 @@ public class App {
      * @param filepath 转换之后html的存放路径
      */
     public static void convertPDF(File docFile, String filepath) {
+        Long start = System.currentTimeMillis();
         // 创建保存html的文件
         File pdfFile = new File(filepath + "/" + new Date().getTime()
             + ".pdf");
@@ -87,6 +118,8 @@ public class App {
 
         officeManager.stop();
 
+        Long end = System.currentTimeMillis();
+        System.out.println("conversion pdf cost: "+(end - start));
     }
 
     /**
